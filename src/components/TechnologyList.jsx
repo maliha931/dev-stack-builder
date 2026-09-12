@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import technologies from '../data/technologies.json'
 
 const icons = {
@@ -47,6 +48,15 @@ const badgeStyles = {
 }
 
 function TechnologyList() {
+  const [stack, setStack] = useState([])
+
+  const addToStack = (technology) => {
+    if (stack.some((item) => item.id === technology.id)) {
+      return
+    }
+
+    setStack([...stack, technology])
+  }
   return (
     <section className="px-6 py-16 bg-white">
       <div className="max-w-6xl mx-auto">
@@ -90,10 +100,9 @@ function TechnologyList() {
 
                   {technology.badge && (
                     <span
-                      className={`px-2.5 py-1 rounded-full text-[10px] font-medium ${
-                        badgeStyles[technology.badgeColor] ||
+                      className={`px-2.5 py-1 rounded-full text-[10px] font-medium ${badgeStyles[technology.badgeColor] ||
                         'bg-slate-100 text-slate-500'
-                      }`}
+                        }`}
                     >
                       {technology.badge}
                     </span>
@@ -130,7 +139,10 @@ function TechnologyList() {
                 </div>
 
                 {/* Add Button */}
-                <button className="w-full mt-4 rounded-md bg-slate-950 px-4 py-2.5 text-[11px] font-medium text-white hover:bg-slate-800 transition">
+                <button
+                  onClick={() => addToStack(technology)}
+                  className="w-full mt-4 rounded-md bg-slate-950 px-4 py-2.5 text-[11px] font-medium text-white hover:bg-slate-800 transition"
+                >
                   Add to Stack
                 </button>
 
@@ -151,11 +163,38 @@ function TechnologyList() {
             </p>
 
             {/* Empty State */}
-            <div className="mt-4 h-20 rounded-lg border border-dashed border-slate-200 flex items-center justify-center">
-              <p className="text-[10px] text-slate-400">
-                Your stack is empty.
-              </p>
-            </div>
+            {stack.length === 0 ? (
+              <div className="mt-4 h-20 rounded-lg border border-dashed border-slate-200 flex items-center justify-center">
+                <p className="text-[10px] text-slate-400">
+                  Your stack is empty.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-4 space-y-3">
+                {stack.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-3 rounded-lg border border-slate-200 p-3"
+                  >
+                    <img
+                      src={icons[item.icon]}
+                      alt={item.name}
+                      className="w-7 h-7 object-contain"
+                    />
+
+                    <div>
+                      <p className="text-xs font-semibold text-slate-900">
+                        {item.name}
+                      </p>
+
+                      <p className="text-[10px] text-slate-400">
+                        {item.category}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
           </aside>
 
