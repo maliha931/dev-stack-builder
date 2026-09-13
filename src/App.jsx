@@ -1,6 +1,8 @@
 import { ToastContainer } from 'react-toastify'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import Footer from './components/Footer'
+
 import TechnologyList from './components/TechnologyList'
 
 function App() {
@@ -10,6 +12,7 @@ function App() {
       <Hero />
       <TechnologyList />
       <ToastContainer />
+      <Footer />
     </div>
   )
 }
