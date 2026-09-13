@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 import technologies from '../data/technologies.json'
 
 const icons = {
@@ -52,10 +53,20 @@ function TechnologyList() {
 
   const addToStack = (technology) => {
     if (stack.some((item) => item.id === technology.id)) {
+      toast.warning(`${technology.name} is already in your stack.`)
       return
     }
 
     setStack([...stack, technology])
+    toast.success(`${technology.name} added to your stack.`)
+  }
+  const removeFromStack = (id) => {
+    setStack(stack.filter((item) => item.id !== id))
+    toast.success('Technology removed from your stack.')
+  }
+  const removeAll = () => {
+    setStack([])
+    toast.success('All technologies removed from your stack.')
   }
   return (
     <section className="px-6 py-16 bg-white">
@@ -141,9 +152,15 @@ function TechnologyList() {
                 {/* Add Button */}
                 <button
                   onClick={() => addToStack(technology)}
-                  className="w-full mt-4 rounded-md bg-slate-950 px-4 py-2.5 text-[11px] font-medium text-white hover:bg-slate-800 transition"
+                  disabled={stack.some((item) => item.id === technology.id)}
+                  className={`w-full mt-4 rounded-md px-4 py-2.5 text-[11px] font-medium text-white transition ${stack.some((item) => item.id === technology.id)
+                      ? 'bg-slate-400 cursor-not-allowed'
+                      : 'bg-slate-950 hover:bg-slate-800'
+                    }`}
                 >
-                  Add to Stack
+                  {stack.some((item) => item.id === technology.id)
+                    ? '✓ Added to Stack'
+                    : 'Add to Stack'}
                 </button>
 
               </div>
@@ -182,7 +199,7 @@ function TechnologyList() {
                       className="w-7 h-7 object-contain"
                     />
 
-                    <div>
+                    <div className="flex-1">
                       <p className="text-xs font-semibold text-slate-900">
                         {item.name}
                       </p>
@@ -191,9 +208,24 @@ function TechnologyList() {
                         {item.category}
                       </p>
                     </div>
+
+                    <button
+                      onClick={() => removeFromStack(item.id)}
+                      className="text-slate-400 hover:text-red-500 text-sm"
+                    >
+                      ×
+                    </button>
                   </div>
                 ))}
               </div>
+            )}
+            {stack.length > 0 && (
+              <button
+                onClick={removeAll}
+                className="w-full mt-4 rounded-md border border-slate-200 px-4 py-2 text-[11px] font-medium text-slate-600 hover:bg-slate-50"
+              >
+                Remove All
+              </button>
             )}
 
           </aside>
