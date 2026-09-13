@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { toast } from 'react-toastify'
+import { useEffect, useState } from 'react'
 import technologies from '../data/technologies.json'
+import { toast } from 'react-toastify'
+
 
 const icons = {
   react:
@@ -49,7 +50,17 @@ const badgeStyles = {
 }
 
 function TechnologyList() {
+
+  const [loading, setLoading] = useState(true)
   const [stack, setStack] = useState([])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   const addToStack = (technology) => {
     if (stack.some((item) => item.id === technology.id)) {
@@ -67,6 +78,15 @@ function TechnologyList() {
   const removeAll = () => {
     setStack([])
     toast.success('All technologies removed from your stack.')
+  }
+  if (loading) {
+    return (
+      <section className="px-6 py-16 bg-white">
+        <div className="max-w-6xl mx-auto text-center">
+          <p className="text-slate-500">Loading technologies...</p>
+        </div>
+      </section>
+    )
   }
   return (
     <section className="px-6 py-16 bg-white">
@@ -154,8 +174,8 @@ function TechnologyList() {
                   onClick={() => addToStack(technology)}
                   disabled={stack.some((item) => item.id === technology.id)}
                   className={`w-full mt-4 rounded-md px-4 py-2.5 text-[11px] font-medium text-white transition ${stack.some((item) => item.id === technology.id)
-                      ? 'bg-slate-400 cursor-not-allowed'
-                      : 'bg-slate-950 hover:bg-slate-800'
+                    ? 'bg-slate-400 cursor-not-allowed'
+                    : 'bg-slate-950 hover:bg-slate-800'
                     }`}
                 >
                   {stack.some((item) => item.id === technology.id)
